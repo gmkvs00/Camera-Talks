@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const Role = require('../models/Role');
+const User = require('@models/User');
+const Role = require('@models/Role');
 
-// POST /api/users
+
 const createUser = async (req, res) => {
   try {
     const { name, email, password, roleId } = req.body;
@@ -35,7 +35,6 @@ const createUser = async (req, res) => {
   }
 };
 
-// GET /api/users
 const getUsers = async (req, res) => {
   try {
     const users = await User.find().populate('role').select('-password');

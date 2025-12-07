@@ -63,7 +63,6 @@ exports.rolesDataTable = async (req, res) => {
       Role.countDocuments({}),     
       Role.countDocuments(query),
     ]);
-    console.log(data);
     
     res.json({
       draw: parseInt(draw, 10) || 0,
