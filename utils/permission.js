@@ -1,5 +1,5 @@
 const permissions = [
-  { name: "user.browse", view: "User browse", group: "User" },
+    { name: "user.browse", view: "User browse", group: "User" },
     { name: "user.create", view: "User create", group: "User" },
     { name: "user.edit", view: "User edit", group: "User" },
     { name: "user.delete", view: "User delete", group: "User" },
@@ -8,10 +8,8 @@ const permissions = [
     { name: "role.create", view: "Role create", group: "Role" },
     { name: "role.edit", view: "Role edit", group: "Role" },
     { name: "role.delete", view: "Role delete", group: "Role" },
-    { name: "permission.browse", view: "Permission browse", group: "Permission" },
-    { name: "mes.dashboard", view: "MES Dashboard", group: "MES" }
-
     
+    { name: "news.browse", view: "News browse", group: "News" },
 ];
 
 module.exports = permissions;

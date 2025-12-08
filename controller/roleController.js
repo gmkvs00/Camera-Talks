@@ -75,3 +75,60 @@ exports.rolesDataTable = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.roleUpdate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, key, permissions } = req.body;   
+
+    console.log('--- roleUpdate body ---');
+    console.log('id:', id);
+    console.log('name:', name);
+    console.log('key:', key);
+    console.log('permissions (raw):', permissions);
+    console.log('type of permissions:', typeof permissions);
+    console.log('------------------------');
+
+    const role = await Role.findById(id);
+    if (!role) {
+      return res.status(404).json({ message: 'Role not found' });
+    }
+
+    // DEBUG: see old role
+    console.log('role before:', role);
+
+    // safer updates:
+    if (typeof name === 'string') role.name = name;
+    if (typeof key === 'string') role.key = key;
+    if (Array.isArray(permissions)) {
+      role.permissions = permissions;
+    }
+
+    await role.save();
+
+    console.log('role after:', role);
+
+    res.status(200).json(role);
+  } catch (err) {
+    console.error('Update role error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+exports.getRoleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+   console.log(id);
+   
+    const role = await Role.findById(id).lean();
+    if (!role) {
+      return res.status(404).json({ message: 'Role not found' });
+    }
+
+    res.json(role);
+  } catch (err) {
+    console.error('getRole error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

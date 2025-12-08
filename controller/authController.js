@@ -28,7 +28,7 @@ exports.loginUser = async (req, res) => {
           id: user.role._id,
           name: user.role.name,
           key: user.role.key,
-          permissions: user.role.permissions // ['user.browse', 'mes.dashboard', ...]
+          permissions: user.role.permissions
         }
       }
     });

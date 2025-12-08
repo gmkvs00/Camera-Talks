@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const roleSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },          // "Super Admin"
-    key: { type: String, required: true, unique: true }, // "super_admin"
+    name: { type: String, required: true },          
+    key: { type: String, required: true, unique: true },
     permissions: [
       {
-        type: String, // e.g. "user.browse", "mes.dashboard"
+        type: String, 
         required: true
       }
     ]

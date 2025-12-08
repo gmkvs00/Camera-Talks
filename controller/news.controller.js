@@ -1,4 +1,4 @@
-const News = require('@models/News');
+const News = require('@models/news');
 
 exports.createNews = async (req, res) => {
   try {
@@ -20,8 +20,6 @@ exports.createNews = async (req, res) => {
       return res.status(400).json({ message: 'Title and content are required.' });
     }
 
-    // If no slug provided, model pre('validate') will generate it.
-    // If slug is provided, ensure unique.
     if (slug) {
       const existingSlug = await News.findOne({ slug });
       if (existingSlug) {
@@ -54,8 +52,6 @@ exports.createNews = async (req, res) => {
   }
 };
 
-// GET /api/news
-// Query params: page, limit, search, status, category
 exports.getNewsList = async (req, res) => {
   try {
     let {
@@ -109,7 +105,6 @@ exports.getNewsList = async (req, res) => {
   }
 };
 
-// GET /api/news/:id
 exports.getNewsById = async (req, res) => {
   try {
     const news = await News.findById(req.params.id).populate('author', 'name email');
@@ -123,7 +118,6 @@ exports.getNewsById = async (req, res) => {
   }
 };
 
-// PUT /api/news/:id
 exports.updateNews = async (req, res) => {
   try {
     const {
@@ -186,7 +180,6 @@ exports.updateNews = async (req, res) => {
   }
 };
 
-// DELETE /api/news/:id
 exports.deleteNews = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);
@@ -200,5 +193,55 @@ exports.deleteNews = async (req, res) => {
   } catch (error) {
     console.error('deleteNews error:', error);
     return res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+exports.newsDataTable = async (req, res) => {
+  try {
+    const { draw, start = 0, length = 10, search } = req.query;
+
+    const limit = parseInt(length, 10) || 10;
+    const skip = parseInt(start, 10) || 0;
+
+    // base query: all news
+    let query = {};
+
+    // DataTables-style global search
+    // search.value will contain the term
+    if (search && search.value) {
+      const searchValue = search.value.trim();
+      if (searchValue) {
+        query = {
+          $or: [
+            { title: { $regex: searchValue, $options: 'i' } },
+            { slug: { $regex: searchValue, $options: 'i' } },
+            { category: { $regex: searchValue, $options: 'i' } },
+            { tags: { $regex: searchValue, $options: 'i' } },
+            { status: { $regex: searchValue, $options: 'i' } },
+          ],
+        };
+      }
+    }
+
+    const [data, recordsTotal, recordsFiltered] = await Promise.all([
+      News.find(query)
+        .sort({ createdAt: -1 }) // latest news first
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .populate('author', 'name email'), // optional: send basic author info
+      News.countDocuments({}),       // total without filter
+      News.countDocuments(query),    // total with filter
+    ]);
+
+    res.json({
+      draw: parseInt(draw, 10) || 0,
+      recordsTotal,
+      recordsFiltered,
+      data,
+    });
+  } catch (err) {
+    console.error('newsDataTable error:', err.message);
+    res.status(500).json({ message: 'Server error' });
   }
 };

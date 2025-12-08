@@ -14,12 +14,14 @@ router.get('/users', protect, authorize(['user.browse']), getUsers);
 
 router.post('/roles', protect, authorize(['role.create']), Role.createRole);
 router.get('/roles', protect, authorize(['role.browse']), Role.getRoles);
-
-router.get('/permissions', protect, authorize(['permission.browse']), getPermissions);
-
 router.get('/roles/datatable', protect, authorize(['role.browse']), Role.rolesDataTable);
+router.get('/rolesByID/:id', protect, authorize(['role.browse']),Role.getRoleById);
+router.post('/rolesUpdate/:id', protect, authorize(['role.browse']),Role.roleUpdate);
+
+router.get('/permissions', protect, authorize(['role.create']), getPermissions);
+
 
 router.post('/news', protect, authorize(['news.create']), News.createNews);
-router.get( '/news/datatable', protect,authorize(['news.browse']),News.createNews);
+router.get( '/news/datatable', protect,authorize(['news.browse']),News.newsDataTable);
 
 module.exports = router;
