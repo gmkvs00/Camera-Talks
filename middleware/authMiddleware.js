@@ -56,7 +56,6 @@ const authorize = (requiredPermissions = []) => {
           .status(403)
           .json({ message: 'Not authorized: permission denied' });
       }
-
       next();
     } catch (err) {
       console.error('Authorize error:', err.message);

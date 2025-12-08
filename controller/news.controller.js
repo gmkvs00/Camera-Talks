@@ -203,35 +203,28 @@ exports.newsDataTable = async (req, res) => {
     const limit = parseInt(length, 10) || 10;
     const skip = parseInt(start, 10) || 0;
 
-    // base query: all news
     let query = {};
 
-    // DataTables-style global search
-    // search.value will contain the term
     if (search && search.value) {
       const searchValue = search.value.trim();
-      if (searchValue) {
-        query = {
-          $or: [
-            { title: { $regex: searchValue, $options: 'i' } },
-            { slug: { $regex: searchValue, $options: 'i' } },
-            { category: { $regex: searchValue, $options: 'i' } },
-            { tags: { $regex: searchValue, $options: 'i' } },
-            { status: { $regex: searchValue, $options: 'i' } },
-          ],
-        };
-      }
+      query = {
+        $or: [
+          { title: { $regex: searchValue, $options: 'i' } },
+          { category: { $regex: searchValue, $options: 'i' } },
+          { status: { $regex: searchValue, $options: 'i' } },
+        ],
+      };
     }
 
     const [data, recordsTotal, recordsFiltered] = await Promise.all([
       News.find(query)
-        .sort({ createdAt: -1 }) // latest news first
+        .populate("author", "name email") // optional
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean()
-        .populate('author', 'name email'), // optional: send basic author info
-      News.countDocuments({}),       // total without filter
-      News.countDocuments(query),    // total with filter
+        .lean(),
+      News.countDocuments({}),
+      News.countDocuments(query),
     ]);
 
     res.json({
@@ -240,8 +233,8 @@ exports.newsDataTable = async (req, res) => {
       recordsFiltered,
       data,
     });
-  } catch (err) {
-    console.error('newsDataTable error:', err.message);
+  } catch (error) {
+    console.error("newsDataTable error:", error);
     res.status(500).json({ message: 'Server error' });
   }
 };

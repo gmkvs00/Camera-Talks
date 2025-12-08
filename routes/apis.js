@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { loginUser } = require('@controller/authController');
+const { loginUser,me } = require('@controller/authController');
 const { createUser, getUsers } = require('../controller/userController');
 const Role = require('@controller/roleController');
 const { getPermissions } = require('@controller/permissionController');
@@ -8,6 +8,7 @@ const News = require('@controller/news.controller');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.post('/auth/login', loginUser);
+router.get('/auth/me',protect, me);
 
 router.post('/users', protect, authorize(['user.create']), createUser);
 router.get('/users', protect, authorize(['user.browse']), getUsers);

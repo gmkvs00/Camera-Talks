@@ -69,11 +69,10 @@ const newsSchema = new mongoose.Schema({
     },
 },{ timestamps: true, });
 
-newsSchema.pre('validate', function (next) {
-    if (!this.slug && this.title) {
-        this.slug = slugify(this.title, { lower: true, strict: true });
-    }
-    next();
+newsSchema.pre('validate', function () {
+  if (!this.slug && this.title) {
+    this.slug = slugify(this.title, { lower: true, strict: true });
+  }
 });
 
 module.exports = mongoose.model('News', newsSchema);

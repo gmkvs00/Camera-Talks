@@ -37,3 +37,18 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
+
+exports.me = async (req, res) => {
+  const user = await User.findById(req.user.id).populate('role');
+  res.json({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: {
+      id: user.role._id,
+      name: user.role.name,
+      key: user.role.key,
+      permissions: user.role.permissions,
+    },
+  });
+};

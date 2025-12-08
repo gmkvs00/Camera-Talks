@@ -10,6 +10,7 @@ const permissions = [
     { name: "role.delete", view: "Role delete", group: "Role" },
     
     { name: "news.browse", view: "News browse", group: "News" },
+    { name: "news.create", view: "News create", group: "News" },
 ];
 
 module.exports = permissions;
