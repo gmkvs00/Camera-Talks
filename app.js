@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const connectDB = require('@config/db');
 const { notFound, errorHandler } = require('@middleware/errorMiddleware');
 const apiRoutes = require('@routes/apis');
+const publicNewsRoutes = require('@routes/publicNewsRoutes');
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', apiRoutes);
+app.use('/api/public', publicNewsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

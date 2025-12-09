@@ -11,6 +11,9 @@ const permissions = [
     
     { name: "news.browse", view: "News browse", group: "News" },
     { name: "news.create", view: "News create", group: "News" },
+    
+    { name: "developer.browse", view: "Developer", group: "Developer" },
+
 ];
 
 module.exports = permissions;
